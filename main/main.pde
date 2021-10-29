@@ -1,4 +1,9 @@
 float angle;
+float angleXY = 66.09;
+float angleXYZ = 31.26;
+
+float angle2XY = radians(angleXY);
+float angle2XYZ = radians(angleXYZ);
 
 Table table;
 float r = 200;
@@ -27,6 +32,7 @@ float rotation = 0;
 
 void setup() {
   size(800, 800, P3D);
+ 
   earth = loadImage("earth.jpg");
 
   jsonObj = loadJSONObject("https://api.n2yo.com/rest/v1/satellite/positions/25544/41.702/-76.014/0/2/&apiKey=JFPDQB-NHQTSB-7PL9S7-4SQ6");
@@ -43,6 +49,11 @@ void setup() {
   
   ISSh = pos1.getFloat("sataltitude");
   
+  float o = sat1Lon - sat2Lon;
+  println(o);
+  float e = sat1Lat - sat2Lat;
+  println(e);
+  
   //println(sat1Lon, sat1Lat);
   //println(sat2Lon, sat2Lat);
 
@@ -58,13 +69,14 @@ void setup() {
   globe.setTexture(earth);
 }
 
+
 void draw() {
   background(51);
   
   pushMatrix();
     translate(width*0.5, height*0.5);
-    rotateY(angle);
-    angle += 0.002;
+  //  rotateY(angle);
+  //  angle += 0.002;
     
     ambientLight(255, 255, 255);
     fill(200);
@@ -74,8 +86,16 @@ void draw() {
 
   // fix: no + PI/2 needed, since latitude is between -180 and 180 deg
   float theta = radians(sat1Lat);
-
   float phi = radians(sat1Lon) + PI;
+  
+  float theta2 = radians(sat2Lat);
+  float phi2 = radians(sat2Lon) + PI;
+  
+  float x2 = r * cos(theta2) * cos(phi2);
+  float y2 = -r * sin(theta2);
+  float z2 = -r * cos(theta2) * sin(phi2);
+  
+  PVector pos2 = new PVector(x2, y2, z2);
 
   // original version
   // float x = r * sin(theta) * cos(phi);
@@ -87,23 +107,40 @@ void draw() {
   float y = -r * sin(theta);
   float z = -r * cos(theta) * sin(phi);
 
-  PVector pos = new PVector(x, y, z);
 
+
+
+  PVector pos = new PVector(x , y, z);
+ // println(pos.z);
   //lights();
   
-  rotation += 0.008;
-
+  rotation -= 0.008;
+  
+  //angleXYZ = radians(angleXYZ);
+  angleXYZ += 0.08;
+  
+ 
+  angleXY += 0.08;
+  
+  
   //latt
   pushMatrix();
     translate(width*0.5, height*0.5);
     //translate(pos.x + ISSh / 10, pos.y + ISSh / 10, pos.z + ISSh / 10);
-    rotate(angle, yAxis.x, yAxis.y, yAxis.z);
+    //rotate(angleXYZ, zAxis.x, zAxis.y, zAxis.z);
+    //rotateX(angle2XY);
+    //rotateY(angle2XYZ);
+    
+ //   rotate(angleXY, zAxis.x, zAxis.y, zAxis.z);
+ //   rotate(angleXYZ, zAxis.x, zAxis.y, zAxis.z);
+    
     rotate(rotation, zAxis.x, zAxis.y, zAxis.z);
-    translate(230, 0, 0);
+    translate(pos.x, pos.y, pos.z +50);
+   // translate(pos2.x, pos.y, pos.z);
     fill(255);
     shape(ISS);
   popMatrix();
-  
+  println(angleXY); 
   //translate(pos.x + ISSh / 10, pos.y + ISSh / 10, pos.z + ISSh / 10);
   //fill(255);
   //shape(ISS);
