@@ -17,13 +17,17 @@ float sat1Lon;
 float sat1Lat;
 float sat2Lon;
 float sat2Lat;
+float startXValue;
+float startYValue;
 
 float ISSh;
 
+PVector xAxis = new PVector(1, 0, 0);
 PVector yAxis = new PVector(0, 1, 0);
 PVector zAxis = new PVector(0, 0, 1);
 
 float rotation = 0;
+boolean start = true;
 
 void setup() {
   size(800, 800, P3D);
@@ -56,6 +60,8 @@ void setup() {
 
   globe = createShape(SPHERE, r);
   globe.setTexture(earth);
+  
+  
 }
 
 void draw() {
@@ -64,7 +70,7 @@ void draw() {
   pushMatrix();
     translate(width*0.5, height*0.5);
     rotateY(angle);
-    angle += 0.002;
+    angle += 0.001;
     
     ambientLight(255, 255, 255);
     fill(200);
@@ -88,18 +94,35 @@ void draw() {
   float z = -r * cos(theta) * sin(phi);
 
   PVector pos = new PVector(x, y, z);
+  
+  if(start == true)
+  {
+    startXValue = parseInt(100*asin(asin( -pos.y / abs(sqrt(pow(pos.x,2)+pow(pos.y,2)+pow(pos.z,2))) ))) ;
+    //println(startXValue);
+    startYValue = asin(pos.x/abs(sqrt(pow(pos.x,2)+pow(pos.y,2)+pow(pos.z,2))));
+    //startXValue = 0;
+    //angle = 0.002;
+    start = false;
+  }
+  //println(frameCount);
 
   //lights();
+  rotation = 0.4*sin(((10*angle)+startXValue)*0.5); //- rotation;
+  //println((frameCount + 20) +"  " + rotation);
+  //println(sin(frameCount/100.0));
   
-  rotation += 0.008;
+  //rotation += 0.008;
 
   //latt
   pushMatrix();
     translate(width*0.5, height*0.5);
+    
     //translate(pos.x + ISSh / 10, pos.y + ISSh / 10, pos.z + ISSh / 10);
-    rotate(angle, yAxis.x, yAxis.y, yAxis.z);
-    rotate(rotation, zAxis.x, zAxis.y, zAxis.z);
-    translate(230, 0, 0);
+   rotate((6*angle)+startYValue, yAxis.x, yAxis.y, yAxis.z);
+   rotate(rotation, xAxis.x, xAxis.y, xAxis.z);
+   // rotate(rotation, zAxis.x, zAxis.y, zAxis.z);
+    translate(0,0,250);
+    //translate(pos.x, pos.y, pos.z + 25);
     fill(255);
     shape(ISS);
   popMatrix();
