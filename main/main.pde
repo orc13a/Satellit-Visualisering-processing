@@ -17,11 +17,13 @@ float sat1Lon;
 float sat1Lat;
 float sat2Lon;
 float sat2Lat;
+boolean start = true;
 
 float ISSh;
 
 PVector yAxis = new PVector(0, 1, 0);
 PVector zAxis = new PVector(0, 0, 1);
+PVector xAxis = new PVector(1, 0, 0);
 
 float rotation = 0;
 
@@ -96,12 +98,25 @@ void draw() {
   //latt
   pushMatrix();
     translate(width*0.5, height*0.5);
+    
     //translate(pos.x + ISSh / 10, pos.y + ISSh / 10, pos.z + ISSh / 10);
-    rotate(angle, yAxis.x, yAxis.y, yAxis.z);
-    rotate(rotation, zAxis.x, zAxis.y, zAxis.z);
-    translate(230, 0, 0);
+    //rotate(angle, yAxis.x, yAxis.y, yAxis.z);
+    //rotate(rotation, yAxis.x, yAxis.y, yAxis.z);
+    //rotate(rotation, xAxis.x, xAxis.y, xAxis.z);
+    //if (start) {
+      rotateZ(PI/4);
+      
+      //start = false;
+    //} else {
+      rotateY(rotation);
+    //}
+    
+    translate(pos.x , pos.y  , pos.z);
+    //rotateZ(PI/4);
+    //rotateY(rotation);
     fill(255);
     shape(ISS);
+    
   popMatrix();
   
   //translate(pos.x + ISSh / 10, pos.y + ISSh / 10, pos.z + ISSh / 10);
